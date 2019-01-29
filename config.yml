@@ -1,0 +1,22 @@
+---
+## General pipeline parameters:
+
+# Name of the pipeline:
+#pipeline: "Amplicon Sequencing Pipeline"
+# ABSOLUTE path to directory holding the working directory:
+workdir_top: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/test_run/"
+# Repository URL:
+#repo: ""
+
+## Pipeline-specific parameters:
+
+threads: 4
+
+# Input genome:
+genome_fasta: "Drosophila_melanogaster.BDGP6.dna_sm.toplevel.fa"
+
+#Adapter sequence for trimming:
+adapters: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/Pipeline/adapters.fasta"
+
+#Reference genome for alignment with bismark
+Bismark_reference: "/home/epicwl/ngs_share/bcbio/genomes/Hsapiens/hg19/bismark/"
