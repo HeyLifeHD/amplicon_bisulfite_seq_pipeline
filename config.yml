@@ -12,9 +12,6 @@ workdir_top: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/test_run
 
 threads: 4
 
-# Input genome:
-genome_fasta: "Drosophila_melanogaster.BDGP6.dna_sm.toplevel.fa"
-
 #Adapter sequence for trimming:
 adapters: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/Pipeline/adapters.fasta"
 
