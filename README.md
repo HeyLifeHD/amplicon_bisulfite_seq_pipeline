@@ -6,6 +6,7 @@ Getting Started
 
 ## Depedencies
 - [miniconda](https://conda.io/miniconda.html)
+- [snakemake](https://snakemake.readthedocs.io/en/stable/)
 - [cutadapt](https://cutadapt.readthedocs.io/)
 - [bismark](https://www.bioinformatics.babraham.ac.uk/projects/bismark/)
 - [multiqc](https://multiqc.info/)
