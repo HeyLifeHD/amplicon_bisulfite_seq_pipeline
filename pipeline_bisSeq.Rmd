@@ -1,0 +1,368 @@
+---
+title: "AmpBS-Pipeline"
+author: "Joschka Hey & Maximilian Schönung"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r Set-Up, include=FALSE}
+# run Rscript -e "rmarkdown::render('pipeline_bisSeq.Rmd')" ~/Documents/Data/AmpBS_JMML_tech_val/cov_files/ "~/Desktop/sites_analysis.bed" 10 "~/Desktop/meta.txt" "~/Desktop/"
+
+### Set-Up ###
+
+# Load the libraries
+library(BiSeq)
+library(reshape2)
+library(ggplot2)
+library(GenomicRanges)
+library(pheatmap)
+library(FactoMineR)
+
+# Load the arguments
+args <- commandArgs(T)
+
+# Specify the paths based on the arguments
+#args <- c("~/Documents/Data/AmpBS_JMML_tech_val/cov_files/","~/Desktop/sites_analysis.bed",10,"~/Desktop/meta.txt")
+
+file <- paste0(args[1],list.files(args[1]))
+file_ind <- stringr::str_detect(file,".cov")
+file <- file[file_ind] 
+cg_in <- read.delim(args[2],header=F)
+cutoff <- as.numeric(args[3])
+meta <- read.delim(args[4],header=T,stringsAsFactors = F)
+output.dir <- args[5]
+
+#meta[,2] <- c(rep("a",10),rep("b",10),rep("c",12))
+
+# shape the meta-data
+rownames(meta) <- meta$UPN
+
+# Load the AmpBS-Seq data in an summarized experiment
+meth.set <- readBismark(file,colData=meta)
+```
+
+# Quality Control
+
+#### Total Reads
+```{r echo=FALSE}
+total.reads <- totalReads(meth.set)
+total.reads <- data.frame("Sample"=colnames(total.reads),"Sites"=colSums(total.reads))
+
+ggplot(total.reads,aes(Sample,log10(Sites)))+
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ylab("log10(Total Reads per Sample)")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+In total `r log10(sum(total.reads$Sites))` x 10^5 reads were aligned and detected. 
+
+<br>
+<br>
+
+#### Detected CpGs
+
+```{r echo=FALSE}
+cg.cov <- covStatistics(meth.set)
+cg.cov <- data.frame("Sample"=names(cg.cov$Covered_CpG_sites),"CpG"=cg.cov$Covered_CpG_sites)
+
+ggplot(cg.cov,aes(Sample,CpG))+
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ylab("Covered CpG sites")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+<br>
+<br>
+
+
+#### Numer of reads per sample versus detected CpG sites
+
+```{r echo=FALSE}
+reads_cg <- cbind(total.reads,"CpG"=cg.cov$CpG)
+
+ggplot(reads_cg,aes(log10(Sites),CpG))+
+  geom_point()+
+  theme_minimal()+
+  geom_smooth(method="lm")
+```
+
+<br>
+<br>
+
+#### Coverage per CpG
+
+```{r echo=FALSE}
+cov_cg <- totalReads(meth.set)
+cov_cg.melt <- melt(cov_cg)
+cov_cg.melt <- cov_cg.melt[cov_cg.melt$value>0,]
+
+ggplot(cov_cg.melt,aes(Var2,log10(value)))+
+  geom_boxplot()+
+  theme_minimal()+
+  xlab("Sample")+
+  ylab("log10(Coverage per CpG)")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+#### Covergae per CpG after coverage filtering
+
+```{r echo=FALSE}
+meth.clean <- BiSeq::filterByCov(meth.set,as.numeric(cutoff),global=FALSE)
+
+cov_cg <- totalReads(meth.clean)
+cov_cg.melt <- melt(cov_cg)
+cov_cg.melt <- cov_cg.melt[cov_cg.melt$value>0,]
+
+ggplot(cov_cg.melt,aes(Var2,log10(value)))+
+  geom_boxplot()+
+  theme_minimal()+
+  xlab("Sample")+
+  ylab("log10(Coverage per CpG)")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+<br>
+<br>
+
+#### Detected CpGs after coverage filtering
+
+```{r echo=FALSE}
+cg.cov <- covStatistics(meth.clean)
+cg.cov <- data.frame("Sample"=names(cg.cov$Covered_CpG_sites),"CpG"=cg.cov$Covered_CpG_sites)
+
+ggplot(cg.cov,aes(Sample,CpG))+
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ylab("Covered CpG sites")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+<br>
+<br>
+
+#### Subset with the CpGs of interest
+
+```{r echo=FALSE}
+cg_in.ranges <- GRanges(seqnames = cg_in$V1, ranges = IRanges(cg_in$V2,width=cg_in$V3-cg_in$V2+1) ,cg_is=cg_in$V4)
+
+meth.sub <- subsetByOverlaps(meth.clean,cg_in.ranges)
+```
+
+
+#### Covergae per CpG of interest after coverage filtering
+
+```{r echo=FALSE}
+
+cov_cg <- totalReads(meth.sub)
+cov_cg.melt <- melt(cov_cg)
+cov_cg.melt <- cov_cg.melt[cov_cg.melt$value>0,]
+
+ggplot(cov_cg.melt,aes(Var2,log10(value)))+
+  geom_boxplot()+
+  theme_minimal()+
+  xlab("Sample")+
+  ylab("log10(Coverage per CpG)")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+<br>
+<br>
+
+#### Detected CpG of interest after coverage filtering
+
+```{r echo=FALSE}
+cg.cov <- covStatistics(meth.sub)
+cg.cov <- data.frame("Sample"=names(cg.cov$Covered_CpG_sites),"CpG"=cg.cov$Covered_CpG_sites)
+
+ggplot(cg.cov,aes(Sample,CpG))+
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ylab("Covered CpG sites")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+<br>
+<br>
+
+# PCA
+
+#### PCA with all CpGs after coverage filtering
+
+```{r echo=FALSE}
+# make a rel Bis-Object
+meth.clean.rel <- rawToRel(filterByCov(meth.set,as.numeric(cutoff),T))
+meth.cluster <- assay(meth.clean.rel)
+pca <- PCA(t(meth.cluster),graph = F,scale.unit = F)
+pca.df <- pca$ind$coord
+colnames(pca.df) <- paste0("PC",1:ncol(pca.df))
+
+
+ggplot(as.data.frame(pca.df),aes(PC1,PC2))+
+  geom_point()+
+  theme_minimal()+
+  xlab(paste0("PC1 (",round(pca$eig[1,2],2),"% Variance)"))+
+  ylab(paste0("PC2 (",round(pca$eig[2,2],2),"% Variance)"))
+
+#Color with pheno data
+if(ncol(meta)>1){
+  for(i in 2:ncol(meta)){
+    coloring <- factor(meta[,i])
+    
+  p <- ggplot(as.data.frame(pca.df),aes(PC1,PC2,color=coloring))+
+  geom_point()+
+  theme_minimal()+
+  xlab(paste0("PC1 (",round(pca$eig[1,2],2),"% Variance)"))+
+  ylab(paste0("PC2 (",round(pca$eig[2,2],2),"% Variance)"))
+  print(p)  
+  }
+}
+
+```
+
+
+<br>
+<br>
+
+
+#### PCA with CpGs of interest after coverage filtering
+
+```{r echo=FALSE}
+# make a rel Bis-Object
+meth.clean.rel <- rawToRel(filterByCov(meth.sub,as.numeric(cutoff),T))
+meth.cluster <- assay(meth.clean.rel)
+pca <- PCA(t(meth.cluster),graph = F,scale.unit = F)
+pca.df <- pca$ind$coord
+colnames(pca.df) <- paste0("PC",1:ncol(pca.df))
+
+
+ggplot(as.data.frame(pca.df),aes(PC1,PC2))+
+  geom_point()+
+  theme_minimal()+
+  xlab(paste0("PC1 (",round(pca$eig[1,2],2),"% Variance)"))+
+  ylab(paste0("PC2 (",round(pca$eig[2,2],2),"% Variance)"))
+
+#Color with pheno data
+if(ncol(meta)>1){
+  for(i in 2:ncol(meta)){
+    coloring <- factor(meta[,i])
+    
+  p <- ggplot(as.data.frame(pca.df),aes(PC1,PC2,color=coloring))+
+  geom_point()+
+  theme_minimal()+
+  xlab(paste0("PC1 (",round(pca$eig[1,2],2),"% Variance)"))+
+  ylab(paste0("PC2 (",round(pca$eig[2,2],2),"% Variance)"))
+  print(p)  
+  }
+}
+
+```
+
+# Clustering
+
+<br>
+
+All Clusterings are performed with manhattan distance and ward.D2 clustering.
+
+#### Unsupervised hierachical clustering with all CpGs after coverage filtering
+
+```{r echo=FALSE}
+# make a rel Bis-Object
+meth.clean.rel <- rawToRel(filterByCov(meth.set,as.numeric(cutoff),T))
+meth.cluster <- assay(meth.clean.rel)
+
+
+pheatmap(meth.cluster,
+         clustering_distance_cols = "manhattan",
+         clustering_method = "ward.D2",
+         show_rownames = F)
+
+#Color with pheno data
+if(ncol(meta)>1){
+  for(i in 2:ncol(meta)){
+    anno_df <- data.frame(meta[,2:ncol(meta)])
+    rownames(anno_df) <- meta$UPN
+    colnames(anno_df) <- colnames(meta)[2:ncol(meta)]
+    
+    p <- pheatmap(meth.cluster,
+         clustering_distance_cols = "manhattan",
+         clustering_method = "ward.D2",
+         show_rownames = F,
+         annotation_col = anno_df)
+    print(p)
+    
+  }}
+
+
+```
+
+<br>
+<br>
+
+#### Unsupervised hierachical clustering with CpGs of interest after coverage filtering
+
+```{r echo=FALSE}
+# make a rel Bis-Object
+meth.clean.rel <- rawToRel(filterByCov(meth.sub,as.numeric(cutoff),T))
+meth.cluster <- assay(meth.clean.rel)
+
+
+pheatmap(meth.cluster,
+         clustering_distance_cols = "manhattan",
+         clustering_method = "ward.D2",
+         show_rownames = F)
+
+
+#Color with pheno data
+if(ncol(meta)>1){
+  for(i in 2:ncol(meta)){
+    anno_df <- data.frame(meta[,2:ncol(meta)])
+    rownames(anno_df) <- meta$UPN
+    colnames(anno_df) <- colnames(meta)[2:ncol(meta)]
+    
+    p <- pheatmap(meth.cluster,
+         clustering_distance_cols = "manhattan",
+         clustering_method = "ward.D2",
+         show_rownames = F,
+         annotation_col = anno_df)
+    print(p)
+    
+  }} 
+```
+
+
+<br>
+<br>
+
+
+```{r echo=FALSE}
+### save the files
+
+## Cut-off filtering
+meth.clean.rel <- rawToRel(filterByCov(meth.set,as.numeric(cutoff),T))
+meth.table <- assay(meth.clean.rel)
+ids <- as.data.frame(rowRanges(meth.clean.rel))
+rownames(meth.table) <- paste0(ids$seqnames,":",ids$start)
+meth.table <- round(meth.table,2)
+write.table(meth.table,paste0(args[5],Sys.Date(),"_beta_values_cutoff_",args[3],".txt"),sep="\t",quote=F)
+
+coverage.df <- totalReads(filterByCov(meth.set,as.numeric(cutoff),T))
+rownames(coverage.df) <- paste0(ids$seqnames,":",ids$start)
+write.table(coverage.df,paste0(args[5],Sys.Date(),"_coverage_cutoff_",args[3],".txt"),sep="\t",quote=F)
+
+## CpG of interest
+meth.clean.rel <- rawToRel(filterByCov(meth.sub,as.numeric(cutoff),T))
+meth.table <- assay(meth.clean.rel)
+ids <- as.data.frame(rowRanges(meth.clean.rel))
+rownames(meth.table) <- paste0(ids$seqnames,":",ids$start)
+meth.table <- round(meth.table,2)
+write.table(meth.table,paste0(args[5],Sys.Date(),"_CpG_interest_beta_values_cutoff_",args[3],".txt"),sep="\t",quote=F)
+
+coverage.df <- totalReads(filterByCov(meth.sub,as.numeric(cutoff),T))
+rownames(coverage.df) <- paste0(ids$seqnames,":",ids$start)
+write.table(coverage.df,paste0(args[5],Sys.Date(),"_CpG_interest_coverage_cutoff_",args[3],".txt"),sep="\t",quote=F)
+
+```
+
