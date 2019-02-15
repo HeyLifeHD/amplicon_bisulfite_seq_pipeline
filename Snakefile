@@ -74,7 +74,7 @@ rule methyl_extract:
     input:
         bam = "03_bismark/{sample}_R1_val_1_bismark_bt2_pe.bam"
     output:
-        sam = "04_methyl/CpG_context_{sample}_R1_val_1_bismark_bt2_pe.txt"
+        sam = "04_methyl/{sample}_R1_val_1_bismark_bt2_pe.bismark.cov"
         
     shell:"""
         bismark_methylation_extractor -p --comprehensive \
