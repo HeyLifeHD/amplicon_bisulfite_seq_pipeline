@@ -17,3 +17,8 @@ adapters: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/Pipeline/ad
 
 #Reference genome for alignment with bismark
 Bismark_reference: "/home/epicwl/ngs_share/bcbio/genomes/Hsapiens/hg19/bismark/"
+
+
+#Options for QC report
+bed: "/C010-datasets/Internal/amplicon_seq_pipeline/test_maxi/sites_analysis.bed"
+meta: "/C010-datasets/Internal/amplicon_seq_pipeline/test_maxi/meta.txt"
