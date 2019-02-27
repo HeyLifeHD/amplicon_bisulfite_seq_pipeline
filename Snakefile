@@ -4,7 +4,9 @@
 import os
 from os import path
 
-configfile: "/C010-datasets/Internal/amplicon_seq_pipeline/test_maxi/config.yml"
+SNAKEDIR = path.dirname(workflow.snakefile)
+configfile: path.join(SNAKEDIR, "config.yml")
+  
 workdir: config["workdir_top"]
 
 import sys
