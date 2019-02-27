@@ -30,7 +30,9 @@ for sample in SAMPLES:
 
 rule all:
     input:
-        expand("04_methyl/CpG_context_{sample}_R1_val_1_bismark_bt2_pe.txt", sample=SAMPLES)
+        #expand("04_methyl/CpG_context_{sample}_R1_val_1_bismark_bt2_pe.txt", sample=SAMPLES)
+        #"pipeline_bisSeq.html"
+        expand("04_methyl/{sample}_R1_val_1_bismark_bt2_pe.bismark.cov", sample=SAMPLES)
 
 rule multiQC:
     message:
