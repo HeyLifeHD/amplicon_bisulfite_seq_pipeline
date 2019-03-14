@@ -1,11 +1,12 @@
 channels:
-- r
+- bioconda
+- conda-forge
+- defaults
 dependencies:
-- r=3.5.2
-- r-BiSeq
+- r-base =3.4.1
+- bioconductor-BiSeq
 - r-ggplot2
-- r-GenomicRanges
+- bioconductor-GenomicRanges
 - r-reshape2
 - r-pheatmap
-- r-FactorMineR
-
+- r-FactoMineR
