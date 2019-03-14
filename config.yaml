@@ -10,5 +10,5 @@ threads: 4
 #Reference genome for alignment with bismark
 Bismark_reference: "/home/epicwl/ngs_share/bcbio/genomes/Hsapiens/hg19/bismark/"
 #Options for QC report: specify sites to be analyzed in a bed file and meta file containing sample names and file names
-bed: "sites_analysis.bed"
-meta: "meta.txt"
+bed: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/test_maxi/sites_analysis.bed"
+meta: "/home/epicwl/c010-datasets/Internal/amplicon_seq_pipeline/test_maxi/meta.txt"
