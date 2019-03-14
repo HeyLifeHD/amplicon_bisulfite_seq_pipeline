@@ -12,7 +12,7 @@ Pipeline for processing of amplicon bisulfite sequencing results.
 
 To use this pipeline simply download and extract the [latest release](https://github.com/HeyLifeHD/amplicon_bisulfite_seq_pipeline).
 ```bash
-git clone --recursive https://github.com/HeyLifeHD/amplicon_bisulfite_seq_pipeline/
+git clone https://github.com/HeyLifeHD/amplicon_bisulfite_seq_pipeline/
 ```
 For further modifications of this pipeline, fork this repository and consider providing applicable modifications via pull request. 
 In case you use this workflow in a publication, dont forget to give credits to the authors by citing the URL of this repository.
