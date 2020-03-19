@@ -40,8 +40,10 @@ Execute the report of the analysis via
 
 
 ## Depedencies
-Dependencies are automatically deployed into isolated environments by Snakmake in case you execute the pipeline with --use-conda.
-
+Dependencies are automatically deployed into isolated environments by Snakmake in case you execute the pipeline with 
+```bash
+snakemake --use-conda.
+```
 - [miniconda](https://conda.io/miniconda.html)
 - [snakemake](https://snakemake.readthedocs.io/en/stable/)
 - [cutadapt](https://cutadapt.readthedocs.io/)
