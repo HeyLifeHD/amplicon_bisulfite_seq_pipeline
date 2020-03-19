@@ -1,0 +1,56 @@
+---
+title: "Home"
+author: "Maximilian Schönung"
+date: "12/18/2018"
+output: html_document
+---
+
+<style>
+body {
+text-align: center;
+}
+</style>
+
+<br>
+
+
+<img src="logo_hexagon.png" alt="DKFZ Logo" width="40%" />
+
+<br>
+
+
+***AmpliconDesign*** is a primer design web tool for targeted DNA methylation analysis.
+
+
+The web tool supports state-of-the-art protocols to design primers for EpiTYPER MassARRAY or targeted Amplicon Bisulfite Sequencing. AmpliconDesign is a all-in-one solution by combining an user-friendly web interface with a fast and efficient data processing workflow. 
+
+<br>
+
+AmpliconDesign has been developed by:
+<br>
+
+Section of Translational Cancer Epigenomics, <br>
+Division of Translational Medical Oncology, German Cancer Research Center (DKFZ) & National Center for Tumor Diseases (NCT) Heidelberg, Germany <br>
+& <br>
+Division of Cancer Epigenomics, German Cancer Research Center Heidelberg (DKFZ)
+
+<br>
+[Translational Cancer Epigenomics](http://www.translational-cancer-epigenomics.de) <br>
+[Computational Epigenomics](https://www.dkfz.de/en/CanEpi/computational_epigenomics.html) <br>
+[Cancer Epigenomics](https://www.dkfz.de/en/CanEpi/index.php)
+
+<br>
+
+Contact: <br>
+[Maximilian Schönung](mailto:m.schoenung@dkfz.de)
+
+<br>
+<br>
+
+[<img src="dkfz_logo.png" alt="DKFZ Logo" width="50%" />](https://www.dkfz.de/en)
+
+
+
+
+
+

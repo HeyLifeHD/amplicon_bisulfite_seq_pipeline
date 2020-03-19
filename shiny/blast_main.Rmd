@@ -1,0 +1,31 @@
+---
+title: "AMP Main Page"
+author: "Maximilian Schönung"
+date: "12/18/2018"
+output: html_document
+---
+
+<br>
+
+AmpliconDesign has an automated bisulfite primer blast algorithm which allows users to analyze whether designed primers show mutliple alignment sites in a bisulfite converted genome. 
+<br>
+
+The following input parameters should be specified:
+
+<br>
+
+#### **Select Genome**
+Selection of the genome assembly. Users can choose between GRCh38/hg38, GRCh27/hg19 and GRCm38/mm10.
+
+<br>
+
+#### **Primer Input**
+Users can input the primer sequence of interest (primer for bisulfite converted genome only). <br>
+
+<br>
+
+
+
+
+
+
