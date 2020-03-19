@@ -1,0 +1,34 @@
+---
+title: "AMP Main Page"
+author: "Maximilian Schönung"
+date: "12/18/2018"
+output: html_document
+---
+
+<br>
+
+The Amplicon-Bisulfite Sequencing (AmpBS-Seq) section of AmpliconDesign allows the design and selection of primer pairs for targeted DNA methylation analysis by either bisulfite deep amplicon sequencing or pyrosequencing. Users can specify the genomic region of interest either as genome coordinates, Illumina methylation array probe names or FASTA files. Primer design parameters should be specified according to the users requirements and sequening primer handels can be added additionally. Primers will be automatically designed by the web service and users can select certain primer pairs to determine binding sites in the context of genomic regions as a graphical output. 
+
+<br>
+
+The following input parameters should be specified:
+
+<br>
+
+#### **Select Genome**
+Selection of the genome assembly. Users can choose between GRCh38/hg38, GRCh27/hg19 and GRCm38/mm10.
+
+<br>
+
+#### **Select type of input**
+AmpliconDesign supports CpG-IDs, Genome Coordinates or FASTA files as single or batch input.
+CpG-IDs or Genome Coordinates have to be slash ('/') separated for batch input. <br>
+
+<br>
+
+
+*Please refere to the help section for a detailed overview of the primer design parameters*
+
+<br>
+
+
